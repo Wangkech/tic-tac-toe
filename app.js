@@ -29,11 +29,22 @@ function Game(player1, player2) {
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
   let currentPlayerMove;
+  const possibilities = [
+    [0, 4, 8],
+    [1, 4, 7],
+    [2, 4, 6],
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [2, 5, 8],
+  ];
   return {
     players,
     board,
     currentPlayer,
     currentPlayerMove,
+    possibilities,
 
     switchPlayer() {
       let nextPlayer;
@@ -48,6 +59,7 @@ function Game(player1, player2) {
     getPlayerMove() {
       let symbol = this.currentPlayer.symbol;
       let move = parseInt(prompt(`Player ${symbol} MOVE: `));
+      console.log(move);
       while (isNaN(move) || move < 0 || move > this.board.length) {
         move = parseInt(prompt(`Player ${symbol} MOVE: `));
       }
@@ -78,13 +90,52 @@ function Game(player1, player2) {
 
       console.log(this.symbol, "has been placed at box", move + 1);
     },
+    checkForWin() {
+      let board = this.board;
+      symbol = this.currentPlayer.symbol;
+      let playerWon = false;
+
+      for (let i = 0; i < possibilities.length; i++) {
+        console.log(` ${i}  cheking ' ${possibilities[i]} ...'`);
+        let matches = 0;
+        for (let j = 0; j < possibilities[i].length; j++) {
+          if (board[possibilities[i][j]] === symbol) {
+            matches++;
+          }
+          console.log(matches, " found");
+        }
+        if (matches === 3) {
+          console.log(`this move resulted in Player ${symbol} winning`);
+          playerWon = true;
+          break;
+        }
+        if (playerWon === false) {
+          console.log(`this did not make Player ${symbol} winning`);
+        }
+      }
+      return playerWon;
+    },
+
+    resetBoard() {
+      this.board.map((box) => {
+        box = "";
+      });
+    },
+
     play() {
       while (this.board.includes("")) {
         this.currentPlayerMove = this.getPlayerMove();
         // validate Move
         if (this.isMoveValid) {
           this.updateBoard();
+          if (this.checkForWin()) {
+            console.log(`${currentPlayer.name} has won the game `);
+            this.resetBoard();
+            break;
+          }
           this.switchPlayer();
+        } else {
+          alert(`spot ${this.currentPlayer.move} is not available`);
         }
       }
     },
