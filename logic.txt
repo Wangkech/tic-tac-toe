@@ -1,0 +1,143 @@
+gh repo create tic-tac-toe --public --source=. --remote=origin --push
+
+
+
+there are 3 components that make the tic tac toe app.
+
+1. players:
+    Players are owners of identity.
+        what do they own?
+            1. symbols: x or o
+            2. they can have names
+                - player1
+                - player2
+                - custom names
+        how many players do we have?
+        - we have exactly two players at any given point of the game.
+        -  these players are: 
+                xPlayer: 
+                    - has name: player1 || customName
+                    - has symbol: x
+                oPlayer: 
+                    - has name: player2 || customName
+                    - has symbol: o
+        What do they mainly do?
+            - they only pass the game controller where to put their marker.
+
+2. board: 
+    What does the board own?
+        - a single spot at any given time can only either be "x" or "o" or empty.
+        1. array of marker locations
+        2. knows winning combinations
+        3. knows the empty and taken spots. 
+        4. knows what symbol is at any given spot.
+    
+    what does the board do?
+        1. gives information to the game controller.
+                Answers questions such as,
+                    1. is the board full,
+                    2. is the requested space taken,
+                    3. 
+        
+
+3. Game controller 
+    - this is the coordinator of the game and the decision maker.
+    
+    responsibilities: 
+        1. takes the player's choices
+        2 checks if the requested spot if available on the board
+        3. places player symbol on the requested spot on board
+        4. checks for a win winning combinations
+        5. declares a winner
+        6. ends the game
+        6. cleans the board
+        5. checks if the board is full
+        5. switches turns between players
+        6. che
+
+
+
+
+
+____________________________ GAMEFLOW ________________________
+
+1. START
+2  set the gameboard and the players
+3. establish starting player's marker. 
+4. get Desired spot from player
+5. check IF spot is available on the board
+        place marker on the board
+        IF there is a winning combination:
+            declare winner
+            end round
+            reset the board.
+        ELSE: 
+            IF the board is full:
+                declare a tie 
+                end round 
+                reset board
+            ELSE:
+                switch to next player
+                GOTO step 4
+
+______________________________________________________________
+
+
+__________________________ GAMEFLOW v.2 ______________________
+1. START
+2. set Board & players
+3. establish starting player
+4. IF board is not full
+    4.1 get desired spot from current player
+    4.2 IF Spot is empty
+        4.1.1 place the mark on the spot
+        4.1.2 IF Player NOT WIN:
+                IF tied:
+                    declare a tie 
+                    end round 
+                    reset board
+                ELSE:
+                    switch turns 
+                    GOTO step 4
+              ELSE: 
+                declare winner
+                end round 
+                reset board
+                
+                    
+
+_________________________ GAMEFLOW with details ______________________
+1 START
+    new Game
+    fresh board
+    get 
+        player1 name
+        player 2 name
+2. SET PLAYERS 
+        playerX = player1
+        playerO = player2
+
+3. GET STARTING PLAYER
+        currentPlayer = playerX
+
+4. GET boardstate
+        -- map through board elements and check if there exist an "" element --
+5.  check IF BOARD IS NOT full
+        PROMPT currentPlayer to MAKE MOVE
+
+        check IF MOVE IS VALID
+            place the move onto the board
+                -- board receives and places onto the specified location  
+            check IF MOVE RESULTS IN A WIN: 
+                DECLARE player has WON
+                END ROUND 
+                RESET BOARD
+            ELSE:
+                check IF MOVE RESULTS in a TIE
+                    DELARE TIE
+                    END ROUND 
+                    RESET BOARD
+                ELSE:
+                    switch TURNS 
+                    GOTO step 4
+
