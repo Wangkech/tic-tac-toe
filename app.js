@@ -45,9 +45,13 @@ function Game(player1, player2) {
 
       this.currentPlayer = nextPlayer;
     },
-    playerMove(move) {
+    getPlayerMove() {
       let symbol = this.currentPlayer.symbol;
-      this.currentPlayerMove = {
+      let move = parseInt(prompt(`Player ${symbol} MOVE: `));
+      while (isNaN(move) || move < 0 || move > this.board.length) {
+        move = parseInt(prompt(`Player ${symbol} MOVE: `));
+      }
+      return {
         symbol,
         move,
       };
@@ -59,19 +63,30 @@ function Game(player1, player2) {
       let inValid = false;
       if (move <= 0 && move < board.length) {
         return inValid;
-      }
-      if (board[move] === "") {
-        return valid;
       } else {
-        return inValid;
+        if (board[move] === "") {
+          return valid;
+        } else {
+          console.log("this space is not available");
+        }
       }
     },
     updateBoard() {
-      let board = this.board;
       let move = this.currentPlayerMove.move;
-      let symbol = this.currentPlayerMove;
-      board[move] = this.currentPlayerMove.symbol;
-      console.log(board);
+      let symbol = this.currentPlayer.symbol;
+      this.board[move] = symbol;
+
+      console.log(this.symbol, "has been placed at box", move + 1);
+    },
+    play() {
+      while (this.board.includes("")) {
+        this.currentPlayerMove = this.getPlayerMove();
+        // validate Move
+        if (this.isMoveValid) {
+          this.updateBoard();
+          this.switchPlayer();
+        }
+      }
     },
   };
 }

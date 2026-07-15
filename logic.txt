@@ -141,3 +141,24 @@ _________________________ GAMEFLOW with details ______________________
                     switch TURNS 
                     GOTO step 4
 
+
+
+
+
+function isMoveValid() {
+    let board = this.board;
+    let move = this.currentPlayerMove.move;
+    let status;
+    let valid = true;
+    let inValid = false;
+    if (move >= 0 && move < board.length) {
+      if (board[move] === "") {
+        status = valid;
+      } else {
+        status = inValid;
+      }
+    } else {
+      status = inValid;
+    }
+    return status;
+  }
