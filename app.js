@@ -28,10 +28,12 @@ function Game(player1, player2) {
   const players = createPlayers(player1, player2);
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
+  let currentPlayerMove;
   return {
     players,
     board,
     currentPlayer,
+    currentPlayerMove,
 
     switchPlayer() {
       let nextPlayer;
@@ -42,6 +44,31 @@ function Game(player1, player2) {
       }
 
       this.currentPlayer = nextPlayer;
+    },
+    playerMove(move) {
+      let symbol = this.currentPlayer.symbol;
+      this.currentPlayerMove = {
+        symbol,
+        move,
+      };
+    },
+    isMoveValid() {
+      let board = this.board;
+      let move = this.currentPlayerMove.move;
+      let valid = true;
+      let inValid = false;
+      if (board[move] === "") {
+        return valid;
+      } else {
+        return inValid;
+      }
+    },
+    updateBoard() {
+      let board = this.board;
+      let move = this.currentPlayerMove.move;
+      let symbol = this.currentPlayerMove;
+      board[move] = this.currentPlayerMove.symbol;
+      console.log(board);
     },
   };
 }
