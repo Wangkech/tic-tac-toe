@@ -57,6 +57,9 @@ function Game(player1, player2) {
       let move = this.currentPlayerMove.move;
       let valid = true;
       let inValid = false;
+      if (move <= 0 && move < board.length) {
+        return inValid;
+      }
       if (board[move] === "") {
         return valid;
       } else {
