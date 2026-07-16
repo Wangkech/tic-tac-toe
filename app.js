@@ -88,31 +88,53 @@ function Game(player1, player2) {
       let symbol = this.currentPlayer.symbol;
       this.board[move] = symbol;
 
-      console.log(this.symbol, "has been placed at box", move + 1);
+      console.log(symbol, "has been placed at box", move + 1);
     },
     checkForWin() {
       let board = this.board;
       symbol = this.currentPlayer.symbol;
       let playerWon = false;
 
-      for (let i = 0; i < possibilities.length; i++) {
-        console.log(` ${i}  cheking ' ${possibilities[i]} ...'`);
+      possibilities.map((possibility) => {
         let matches = 0;
-        for (let j = 0; j < possibilities[i].length; j++) {
-          if (board[possibilities[i][j]] === symbol) {
-            matches++;
-          }
-          console.log(matches, " found");
+        if (!playerWon) {
+          console.log(
+            ` ${possibilities.indexOf(possibility) + 1}  cheking ' ${possibility} ...'`,
+          );
+          possibility.map((box) => {
+            if (board[box] === symbol) {
+              matches++;
+              console.log(matches, " found");
+            }
+            if (matches === 3) {
+              console.log(`this move resulted in Player ${symbol} winning`);
+              playerWon = true;
+            }
+          });
         }
-        if (matches === 3) {
-          console.log(`this move resulted in Player ${symbol} winning`);
-          playerWon = true;
-          break;
-        }
-        if (playerWon === false) {
-          console.log(`this did not make Player ${symbol} winning`);
-        }
+      });
+      if (playerWon === false) {
+        console.log(`this did not make Player ${symbol} winning`);
       }
+      // for (let i = 0; i < possibilities.length; i++) {
+      //   console.log(` ${i}  cheking ' ${possibilities[i]} ...'`);
+      //   let matches = 0;
+      //   for (let j = 0; j < possibilities[i].length; j++) {
+      //     if (board[possibilities[i][j]] === symbol) {
+      //       matches++;
+      //     }
+      //     console.log(matches, " found");
+      //   }
+      //   if (matches === 3) {
+      //     console.log(`this move resulted in Player ${symbol} winning`);
+      //     playerWon = true;
+      //     break;
+      //   }
+      //   if (playerWon === false) {
+      //     console.log(`this did not make Player ${symbol} winning`);
+      //   }
+      // }
+
       return playerWon;
     },
 
