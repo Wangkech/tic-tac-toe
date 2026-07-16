@@ -92,31 +92,22 @@ function Game(player1, player2) {
     },
     checkForWin() {
       let board = this.board;
-      symbol = this.currentPlayer.symbol;
+      let symbol = this.currentPlayer.symbol;
       let playerWon = false;
 
       possibilities.map((possibility) => {
         let matches = 0;
         if (!playerWon) {
-          console.log(
-            ` ${possibilities.indexOf(possibility) + 1}  cheking ' ${possibility} ...'`,
-          );
           possibility.map((box) => {
             if (board[box] === symbol) {
               matches++;
-              console.log(matches, " found");
             }
             if (matches === 3) {
-              console.log(`this move resulted in Player ${symbol} winning`);
               playerWon = true;
             }
           });
         }
       });
-      if (playerWon === false) {
-        console.log(`this did not make Player ${symbol} winning`);
-      }
-
       return playerWon;
     },
 
