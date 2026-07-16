@@ -29,6 +29,7 @@ function Game(player1, player2) {
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
   let currentPlayerMove;
+  let rounds = [];
   let gameOn = true;
   const possibilities = [
     [0, 4, 8],
@@ -45,67 +46,33 @@ function Game(player1, player2) {
     board,
     currentPlayer,
     currentPlayerMove,
+    rounds,
     possibilities,
     gameOn,
 
-    switchPlayer() {
-      let nextPlayer;
-      if (this.players.indexOf(this.currentPlayer) === 0) {
-        nextPlayer = this.players[1];
-      } else {
-        nextPlayer = this.players[0];
-      }
+    // selectBoardCell() {
+    //   let board = this.board;
+    //   let symbol = this.currentPlayer.symbol;
+    //   let cell;
+    //   function getCell() {
+    //     cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+    //     while (isNaN(cell) || cell < 0 || cell > board.length) {
+    //       cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+    //     }
+    //   }
 
-      this.currentPlayer = nextPlayer;
-    },
-    selectBoardCell() {
-      let board = this.board;
-      let symbol = this.currentPlayer.symbol;
-      let move;
-      function getCell() {
-        let cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-        while (isNaN(cell) || cell < 0 || move > this.board.length) {
-          cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-        }
-        return cell;
-      }
-      do {
-        move = getCell();
-      } while (this.board[move] != "");
+    //   // getCell();
 
-      return {
-        symbol,
-        move,
-      };
-    },
+    //   do {
+    //     getCell();
+    //     console.log(cell);
+    //   } while (board[cell] != "");
 
-    updateBoard() {
-      let move = this.currentPlayerMove.move;
-      let symbol = this.currentPlayer.symbol;
-      this.board[move] = symbol;
-
-      console.log(symbol, "has been placed at cell", move + 1);
-    },
-    checkForWin() {
-      let board = this.board;
-      let symbol = this.currentPlayer.symbol;
-      let playerWon = false;
-
-      possibilities.map((possibility) => {
-        let matches = 0;
-        if (!playerWon) {
-          possibility.map((cell) => {
-            if (board[cell] === symbol) {
-              matches++;
-            }
-            if (matches === 3) {
-              playerWon = true;
-            }
-          });
-        }
-      });
-      return playerWon;
-    },
+    //   return {
+    //     symbol,
+    //     cell,
+    //   };
+    // },
 
     resetBoard() {
       this.board.map((cell) => {
@@ -113,24 +80,104 @@ function Game(player1, player2) {
       });
     },
 
-    makePlay() {
-      const move = this.currentPlayerMove;
+    playRound() {
       let board = this.board;
+      let symbol = this.currentPlayer.symbol;
+      let players = this.players;
+      let currentPlayer = this.currentPlayer;
+      let playerMove = this.currentPlayerMove;
+      let gameOn = this.gameOn;
+      let roundWinner;
+      let rounds = this.rounds;
 
-      if (this.board.includes("")) {
-        // validate Move
-        if (true) {
-          this.updateBoard();
-          if (this.checkForWin()) {
-            console.log(`${currentPlayer.name} has won the game `);
-            this.resetBoard();
-            // break;
+      function selectBoardCell() {
+        let symbol = currentPlayer.symbol;
+        let cell;
+        function getCell() {
+          cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+          while (isNaN(cell) || cell < 0 || cell > board.length) {
+            cell = parseInt(prompt(`Player ${symbol} MOVE: `));
           }
-          this.switchPlayer();
+        }
+        do {
+          getCell();
+          console.log(cell);
+        } while (board[cell] != "");
+
+        return {
+          symbol,
+          cell,
+        };
+      }
+      function updateBoard() {
+        let cell = playerMove.cell;
+        let symbol = playerMove.symbol;
+        board[cell] = symbol;
+        console.log(symbol, "has been placed at cell", cell + 1);
+      }
+      function checkForWin() {
+        let winStatus = false;
+        let winPattern;
+
+        possibilities.map((possibility) => {
+          let matches = 0;
+          if (!winStatus) {
+            possibility.map((cell) => {
+              if (board[cell] === playerMove.symbol) {
+                matches++;
+              }
+              if (matches === 3) {
+                winStatus = true;
+                winPattern = [...possibility];
+              }
+            });
+          }
+        });
+        return { winStatus, winPattern };
+      }
+      function handResult() {
+        if (result === {}) {
+          console.log("This game is a tie");
         } else {
-          alert(`spot ${this.currentPlayer.move} is not available`);
+          console.log(result, "Has WON this round!!");
         }
       }
+      function switchPlayer() {
+        let nextPlayer;
+        if (players.indexOf(currentPlayer) === 0) {
+          nextPlayer = players[1];
+        } else {
+          nextPlayer = players[0];
+        }
+
+        currentPlayer = nextPlayer;
+      }
+      function makeMove() {
+        playerMove = selectBoardCell();
+        let pattern;
+        updateBoard();
+        let winStatus = checkForWin().winStatus;
+        if (winStatus) {
+          pattern = checkForWin().winPattern;
+          gameOn = !gameOn;
+          roundWinner = currentPlayer;
+          console.log(gameOn ? "game is still on" : "game is over");
+        } else if (!checkForWin().winStatus && board.includes("") === false) {
+          gameOn = !gameOn;
+        }
+      }
+      function roundDetails() {
+        return {
+          roundWinner,
+          winPattern,
+        };
+      }
+
+      while (board.includes("") === true && gameOn) {
+        makeMove();
+        switchPlayer();
+      }
+      rounds.push(roundDetails());
     },
   };
 }
