@@ -50,30 +50,6 @@ function Game(player1, player2) {
     possibilities,
     gameOn,
 
-    // selectBoardCell() {
-    //   let board = this.board;
-    //   let symbol = this.currentPlayer.symbol;
-    //   let cell;
-    //   function getCell() {
-    //     cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-    //     while (isNaN(cell) || cell < 0 || cell > board.length) {
-    //       cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-    //     }
-    //   }
-
-    //   // getCell();
-
-    //   do {
-    //     getCell();
-    //     console.log(cell);
-    //   } while (board[cell] != "");
-
-    //   return {
-    //     symbol,
-    //     cell,
-    //   };
-    // },
-
     resetBoard() {
       this.board.map((cell) => {
         cell = "";
