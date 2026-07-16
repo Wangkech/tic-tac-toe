@@ -116,24 +116,6 @@ function Game(player1, player2) {
       if (playerWon === false) {
         console.log(`this did not make Player ${symbol} winning`);
       }
-      // for (let i = 0; i < possibilities.length; i++) {
-      //   console.log(` ${i}  cheking ' ${possibilities[i]} ...'`);
-      //   let matches = 0;
-      //   for (let j = 0; j < possibilities[i].length; j++) {
-      //     if (board[possibilities[i][j]] === symbol) {
-      //       matches++;
-      //     }
-      //     console.log(matches, " found");
-      //   }
-      //   if (matches === 3) {
-      //     console.log(`this move resulted in Player ${symbol} winning`);
-      //     playerWon = true;
-      //     break;
-      //   }
-      //   if (playerWon === false) {
-      //     console.log(`this did not make Player ${symbol} winning`);
-      //   }
-      // }
 
       return playerWon;
     },
