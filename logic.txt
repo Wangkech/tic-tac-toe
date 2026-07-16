@@ -162,3 +162,24 @@ function isMoveValid() {
     }
     return status;
   }
+
+  selectBoardCell() {
+      let board = this.board;
+      let symbol = this.currentPlayer.symbol;
+      let move;
+      function getCell() {
+        let cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+        while (isNaN(cell) || cell < 0 || move > this.board.length) {
+          cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+        }
+        return cell;
+      }
+      do {
+        move = getCell();
+      } while (this.board[move] != "");
+
+      return {
+        symbol,
+        move,
+      };
+    },

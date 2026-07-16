@@ -29,6 +29,7 @@ function Game(player1, player2) {
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
   let currentPlayerMove;
+  let gameOn = true;
   const possibilities = [
     [0, 4, 8],
     [1, 4, 7],
@@ -45,6 +46,7 @@ function Game(player1, player2) {
     currentPlayer,
     currentPlayerMove,
     possibilities,
+    gameOn,
 
     switchPlayer() {
       let nextPlayer;
@@ -56,39 +58,33 @@ function Game(player1, player2) {
 
       this.currentPlayer = nextPlayer;
     },
-    getPlayerMove() {
+    selectBoardCell() {
+      let board = this.board;
       let symbol = this.currentPlayer.symbol;
-      let move = parseInt(prompt(`Player ${symbol} MOVE: `));
-      console.log(move);
-      while (isNaN(move) || move < 0 || move > this.board.length) {
-        move = parseInt(prompt(`Player ${symbol} MOVE: `));
+      let move;
+      function getCell() {
+        let cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+        while (isNaN(cell) || cell < 0 || move > this.board.length) {
+          cell = parseInt(prompt(`Player ${symbol} MOVE: `));
+        }
+        return cell;
       }
+      do {
+        move = getCell();
+      } while (this.board[move] != "");
+
       return {
         symbol,
         move,
       };
     },
-    isMoveValid() {
-      let board = this.board;
-      let move = this.currentPlayerMove.move;
-      let valid = true;
-      let inValid = false;
-      if (move <= 0 && move < board.length) {
-        return inValid;
-      } else {
-        if (board[move] === "") {
-          return valid;
-        } else {
-          console.log("this space is not available");
-        }
-      }
-    },
+
     updateBoard() {
       let move = this.currentPlayerMove.move;
       let symbol = this.currentPlayer.symbol;
       this.board[move] = symbol;
 
-      console.log(symbol, "has been placed at box", move + 1);
+      console.log(symbol, "has been placed at cell", move + 1);
     },
     checkForWin() {
       let board = this.board;
@@ -98,8 +94,8 @@ function Game(player1, player2) {
       possibilities.map((possibility) => {
         let matches = 0;
         if (!playerWon) {
-          possibility.map((box) => {
-            if (board[box] === symbol) {
+          possibility.map((cell) => {
+            if (board[cell] === symbol) {
               matches++;
             }
             if (matches === 3) {
@@ -112,21 +108,23 @@ function Game(player1, player2) {
     },
 
     resetBoard() {
-      this.board.map((box) => {
-        box = "";
+      this.board.map((cell) => {
+        cell = "";
       });
     },
 
-    play() {
-      while (this.board.includes("")) {
-        this.currentPlayerMove = this.getPlayerMove();
+    makePlay() {
+      const move = this.currentPlayerMove;
+      let board = this.board;
+
+      if (this.board.includes("")) {
         // validate Move
-        if (this.isMoveValid) {
+        if (true) {
           this.updateBoard();
           if (this.checkForWin()) {
             console.log(`${currentPlayer.name} has won the game `);
             this.resetBoard();
-            break;
+            // break;
           }
           this.switchPlayer();
         } else {
