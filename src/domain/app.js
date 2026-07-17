@@ -28,6 +28,7 @@ function Game(player1, player2) {
   const players = createPlayers(player1, player2);
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
+  // eslint-disable-next-line no-unassigned-vars
   let currentPlayerMove;
   let rounds = [];
   let gameOn = true;
@@ -52,13 +53,13 @@ function Game(player1, player2) {
 
     resetBoard() {
       this.board.map((cell) => {
-        cell = "";
+        cell.push("");
       });
     },
 
     playRound() {
       let board = this.board;
-      let symbol = this.currentPlayer.symbol;
+      // let symbol = this.currentPlayer.symbol;
       let players = this.players;
       let currentPlayer = this.currentPlayer;
       let playerMove = this.currentPlayerMove;
@@ -111,13 +112,13 @@ function Game(player1, player2) {
         });
         return { winStatus, winPattern };
       }
-      function handResult() {
-        if (result === {}) {
-          console.log("This game is a tie");
-        } else {
-          console.log(result, "Has WON this round!!");
-        }
-      }
+      // function handResult() {
+      //   if (result === {}) {
+      //     console.log("This game is a tie");
+      //   } else {
+      //     console.log(result, "Has WON this round!!");
+      //   }
+      // }
       function switchPlayer() {
         let nextPlayer;
         if (players.indexOf(currentPlayer) === 0) {
@@ -125,7 +126,6 @@ function Game(player1, player2) {
         } else {
           nextPlayer = players[0];
         }
-
         currentPlayer = nextPlayer;
       }
       function makeMove() {
@@ -136,17 +136,15 @@ function Game(player1, player2) {
         if (winStatus) {
           pattern = checkForWin().winPattern;
           gameOn = !gameOn;
-          roundWinner = currentPlayer;
+          roundWinner = { currentPlayer, pattern };
+
           console.log(gameOn ? "game is still on" : "game is over");
         } else if (!checkForWin().winStatus && board.includes("") === false) {
           gameOn = !gameOn;
         }
       }
       function roundDetails() {
-        return {
-          roundWinner,
-          winPattern,
-        };
+        return roundWinner;
       }
 
       while (board.includes("") === true && gameOn) {
