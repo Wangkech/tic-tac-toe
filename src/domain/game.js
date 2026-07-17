@@ -1,4 +1,4 @@
-function Game(player1, player2) {
+export function Game(player1, player2) {
   function gameBoard() {
     const boardSize = 9;
     const board = (boardSize) => {
@@ -155,7 +155,3 @@ function Game(player1, player2) {
     },
   };
 }
-
-const game = Game("wangkech", "kelly");
-
-console.log(game.currentPlayer);
