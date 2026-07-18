@@ -29,7 +29,10 @@ export function Game(player1, player2) {
   const initialPlayer = players[0];
   let currentPlayer = initialPlayer;
   // eslint-disable-next-line no-unassigned-vars
-  let currentPlayerMove;
+  let currentPlayerMove = {
+    cell: "",
+    symbol: "",
+  };
   let rounds = [];
   let gameOn = true;
   const possibilities = [
@@ -50,13 +53,41 @@ export function Game(player1, player2) {
     rounds,
     possibilities,
     gameOn,
+    switchPlayer() {
+      let nextPlayer;
+      if (this.players.indexOf(this.currentPlayer) === 0) {
+        nextPlayer = this.players[1];
+      } else {
+        nextPlayer = this.players[0];
+      }
 
+      this.currentPlayer = nextPlayer;
+      return nextPlayer;
+    },
+    checkForWin(board, move) {
+      let winStatus = false;
+      let winPattern;
+      possibilities.map((possibility) => {
+        let matches = 0;
+        if (!winStatus) {
+          possibility.map((cell) => {
+            if (board[cell] === move.symbol) {
+              matches++;
+            }
+            if (matches === 3) {
+              winStatus = true;
+              winPattern = [...possibility];
+            }
+          });
+        }
+      });
+      return { winStatus, winPattern };
+    },
     resetBoard() {
       this.board.map((cell) => {
         cell.push("");
       });
     },
-
     playRound() {
       let board = this.board;
       // let symbol = this.currentPlayer.symbol;
@@ -67,19 +98,8 @@ export function Game(player1, player2) {
       let roundWinner;
       let rounds = this.rounds;
 
-      function selectBoardCell() {
+      function selectedCell(cell) {
         let symbol = currentPlayer.symbol;
-        let cell;
-        function getCell() {
-          cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-          while (isNaN(cell) || cell < 0 || cell > board.length) {
-            cell = parseInt(prompt(`Player ${symbol} MOVE: `));
-          }
-        }
-        do {
-          getCell();
-          console.log(cell);
-        } while (board[cell] != "");
 
         return {
           symbol,
@@ -129,18 +149,22 @@ export function Game(player1, player2) {
         currentPlayer = nextPlayer;
       }
       function makeMove() {
-        playerMove = selectBoardCell();
+        playerMove = selectedCell();
         let pattern;
-        updateBoard();
-        let winStatus = checkForWin().winStatus;
-        if (winStatus) {
-          pattern = checkForWin().winPattern;
-          gameOn = !gameOn;
-          roundWinner = { currentPlayer, pattern };
+        if (board[playerMove.cell] != "") {
+          return;
+        } else {
+          updateBoard();
+          let winStatus = checkForWin().winStatus;
+          if (winStatus) {
+            pattern = checkForWin().winPattern;
+            gameOn = !gameOn;
+            roundWinner = { currentPlayer, pattern };
 
-          console.log(gameOn ? "game is still on" : "game is over");
-        } else if (!checkForWin().winStatus && board.includes("") === false) {
-          gameOn = !gameOn;
+            console.log(gameOn ? "game is still on" : "game is over");
+          } else if (!checkForWin().winStatus && board.includes("") === false) {
+            gameOn = !gameOn;
+          }
         }
       }
       function roundDetails() {
