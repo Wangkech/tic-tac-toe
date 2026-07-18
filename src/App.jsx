@@ -3,26 +3,67 @@ import Board from "./Board";
 import { Game } from "./domain/game.js";
 import NameInput from "./NameInput";
 function App() {
-  const [player1, setPlayer1] = useState("");
-  const [player2, setPlayer2] = useState("");
+  // states
+  const [player1, setPlayer1] = useState("Player 1");
+  const [player2, setPlayer2] = useState("Player 2");
   const [game, setGame] = useState(Game(player1, player2));
   const [board, setBoard] = useState(game.board);
+  const players = game.players;
+  const [gameOn, setGameOn] = useState(game.gameOn);
   const [currentPlayer, setCurrentPlayer] = useState(game.currentPlayer);
+  const [cellChoice, setCellChoice] = useState("");
+  let currentPlayerMove = game.currentPlayerMove;
 
-  console.log("Board in APP", board);
+  // console.log("Board in APP", board);
 
   function startGameHandler() {
     let newGame = Game(player1, player2);
     let newBoard = newGame.board;
     let newCurrentPlayer = newGame.currentPlayer;
+    setCellChoice(null);
     setGame(newGame);
     setBoard(newBoard);
     setCurrentPlayer(newCurrentPlayer);
 
-    console.log(newGame.players);
+    // console.log(newGame.players);
   }
+  // console.log(currentPlayerMove);
+  function cellClickHandler(index) {
+    let playerChoice = index;
+    let newCurrentPlayerMove = { ...game.currentPlayerMove };
 
-  console.log(currentPlayer);
+    newCurrentPlayerMove.cell = playerChoice;
+    newCurrentPlayerMove.symbol = currentPlayer.symbol;
+    console.log(newCurrentPlayerMove);
+
+    if (board[index] != "") {
+      alert("That cell is occupied");
+    } else {
+      // updateBoard
+      let newBoard = [...board];
+      newBoard[index] = currentPlayer.symbol;
+      setBoard(newBoard);
+      console.log(newBoard);
+
+      // calculate WIN
+      let winStatus = game.checkForWin(
+        newBoard,
+        newCurrentPlayerMove,
+      ).winStatus;
+      console.log(winStatus);
+      if (winStatus === false) {
+        if (newBoard.includes("") === false) {
+          console.log("there is a tie");
+        } else {
+          let nextPlayer = game.switchPlayer();
+          // console.log(nextPlayer);
+          setCurrentPlayer(nextPlayer);
+        }
+      } else {
+        console.log(currentPlayer.name, " has won the game");
+      }
+    }
+  }
   return (
     <>
       {/* <h1>We are up and running.....</h1> */}
@@ -30,8 +71,14 @@ function App() {
         <NameInput setPlayer={setPlayer1} placeholder={"enter Player1 name"} />
         <NameInput setPlayer={setPlayer2} placeholder={"enter Player2 name"} />
       </div>
-      <button onClick={() => startGameHandler()}>Start Game</button>
-      <Board board={board} setBoard={setBoard} currentPlayer={currentPlayer} />
+      <button
+        onClick={() => {
+          startGameHandler();
+        }}
+      >
+        Start Game
+      </button>
+      <Board board={board} cellClickHandler={cellClickHandler} />
     </>
   );
 }

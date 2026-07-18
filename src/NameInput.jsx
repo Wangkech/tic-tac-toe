@@ -9,14 +9,15 @@ function NameInput({ setPlayer, placeholder }) {
   //   setPlayer(input);
   // }
   return (
-    <div className="flex">
+    <div className="flex h-16 p-2">
       <input
         placeholder={placeholder}
-        classnName=" w-[100px]"
+        className="h-full w-37.5 bg-blue-200 p-1 text-2xl"
+
         size="30"
         onChange={getInput}
       />
-      <button>Save Name</button>
+      {/* <button>Save Name</button> */}
     </div>
   );
 }
