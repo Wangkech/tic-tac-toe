@@ -67,7 +67,7 @@ function App() {
   return (
     <>
       {/* <h1>We are up and running.....</h1> */}
-      <div className="m-4 flex h-20 justify-around">
+      <div className="flex h-20 justify-around">
         <NameInput setPlayer={setPlayer1} placeholder={"enter Player1 name"} />
         <NameInput setPlayer={setPlayer2} placeholder={"enter Player2 name"} />
       </div>
