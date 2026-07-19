@@ -53,14 +53,14 @@ function App() {
       console.log(winStatus);
       if (winStatus === false) {
         if (newBoard.includes("") === false) {
-          console.log("there is a tie");
+          alert("there is a tie");
         } else {
           let nextPlayer = game.switchPlayer();
           // console.log(nextPlayer);
           setCurrentPlayer(nextPlayer);
         }
       } else {
-        console.log(currentPlayer.name, " has won the game");
+        alert(currentPlayer.name, " has won the game");
       }
     }
   }
