@@ -2,11 +2,13 @@ import { useState } from "react";
 import Board from "./Board";
 import { Game } from "./domain/game.js";
 import NameInput from "./NameInput";
+import LogoBanner from "./LogoBanner.jsx";
+import StartButton from "./StartButton.jsx";
 function App() {
   // states
   const [player1, setPlayer1] = useState("Player 1");
   const [player2, setPlayer2] = useState("Player 2");
-  const [game, setGame] = useState(Game(player1, player2));
+  const [game, setGame] = useState(Game(null));
   const [board, setBoard] = useState(game.board);
   const players = game.players;
   const [gameOn, setGameOn] = useState(game.gameOn);
@@ -27,6 +29,7 @@ function App() {
 
     // console.log(newGame.players);
   }
+  function pullStartGameModal() {}
   // console.log(currentPlayerMove);
   function cellClickHandler(index) {
     let playerChoice = index;
@@ -71,13 +74,8 @@ function App() {
         <NameInput setPlayer={setPlayer1} placeholder={"enter Player1 name"} />
         <NameInput setPlayer={setPlayer2} placeholder={"enter Player2 name"} />
       </div> */}
-      <button
-        onClick={() => {
-          startGameHandler();
-        }}
-      >
-        Start Game
-      </button>
+      <LogoBanner />
+      <StartButton text="Start Game" click={startGameHandler} />
       <Board board={board} cellClickHandler={cellClickHandler} />
     </>
   );
