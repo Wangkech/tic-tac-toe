@@ -1,8 +1,11 @@
-function LogoBanner() {
+function LogoBanner({ style }) {
   return (
-    <div className="mt-4 h-[30%] w-full">
+    <div
+      className="flex h-87.5 w-full items-center justify-center"
+      style={style}
+    >
       <img
-        className="mx-auto mt-auto mb-auto h-25 w-80.5"
+        className="h-25 w-80.5"
         src="./images/banner.svg"
         alt="Logo Banner"
       />
