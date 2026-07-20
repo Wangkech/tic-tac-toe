@@ -4,10 +4,6 @@ function NameInput({ setPlayer, placeholder }) {
     setPlayer(name);
   }
 
-  // function saveInput() {
-  //   let input = getInput();
-  //   setPlayer(input);
-  // }
   return (
     <div className="flex h-16 p-2">
       <input
@@ -17,7 +13,6 @@ function NameInput({ setPlayer, placeholder }) {
         size="30"
         onChange={getInput}
       />
-      {/* <button>Save Name</button> */}
     </div>
   );
 }

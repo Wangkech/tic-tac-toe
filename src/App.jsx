@@ -4,14 +4,16 @@ import { Game } from "./domain/game.js";
 import NameInput from "./NameInput";
 import LogoBanner from "./LogoBanner.jsx";
 import StartButton from "./StartButton.jsx";
+import StartGameModal from "./StartGameModal.jsx";
+import CurrentPlayerBanner from "./CurrentPlayerBanner.jsx";
 function App() {
   // states
   const [player1, setPlayer1] = useState("Player 1");
   const [player2, setPlayer2] = useState("Player 2");
   const [game, setGame] = useState(Game(null));
   const [board, setBoard] = useState(game.board);
-  const players = game.players;
-  const [gameOn, setGameOn] = useState(game.gameOn);
+  // const players = game.players;
+  const [gameOn, setGameOn] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(game.currentPlayer);
   const [cellChoice, setCellChoice] = useState("");
   let currentPlayerMove = game.currentPlayerMove;
@@ -23,13 +25,17 @@ function App() {
     let newBoard = newGame.board;
     let newCurrentPlayer = newGame.currentPlayer;
     setCellChoice(null);
+    setGameOn(true);
     setGame(newGame);
     setBoard(newBoard);
     setCurrentPlayer(newCurrentPlayer);
 
     // console.log(newGame.players);
   }
-  function pullStartGameModal() {}
+  function constainer() {
+    let modal = <StartGameModal />;
+    return modal;
+  }
   // console.log(currentPlayerMove);
   function cellClickHandler(index) {
     let playerChoice = index;
@@ -56,14 +62,16 @@ function App() {
       console.log(winStatus);
       if (winStatus === false) {
         if (newBoard.includes("") === false) {
-          alert("there is a tie");
+          setTimeout(() => alert("there is a tie"), 500);
         } else {
           let nextPlayer = game.switchPlayer();
           // console.log(nextPlayer);
           setCurrentPlayer(nextPlayer);
         }
       } else {
-        alert(currentPlayer.name, " has won the game");
+        setBoard(newBoard);
+        setTimeout(() => alert(`${currentPlayer.name} has won`), 500);
+        // setGameOn(false);
       }
     }
   }
@@ -75,8 +83,16 @@ function App() {
         <NameInput setPlayer={setPlayer2} placeholder={"enter Player2 name"} />
       </div> */}
       <LogoBanner />
-      <StartButton text="Start Game" click={startGameHandler} />
-      <Board board={board} cellClickHandler={cellClickHandler} />
+      {gameOn ? (
+        <>
+          <CurrentPlayerBanner currentPlayer={currentPlayer} />
+          <Board board={board} cellClickHandler={cellClickHandler} />
+        </>
+      ) : (
+        <StartButton text="Start Game" click={startGameHandler} />
+      )}
+      {/* <StartButton text="Start Game" click={startGameHandler} />
+      <Board board={board} cellClickHandler={cellClickHandler} /> */}
     </>
   );
 }
