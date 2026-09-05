@@ -39,32 +39,35 @@ function App() {
     }
   }
   return (
-    <>
+    <main
+      className={`flex h-1/2 flex-col items-center justify-between gap-4 ${onGame && "grid h-full w-full grid-rows-[6rem_7rem_minmax(0,350px)_4rem] justify-center gap-0"}`}
+    >
       {onGame ? (
         <>
-          <LogoBanner style={logoBannerDuringGame} />
+          <LogoBanner onGame={onGame} style={logoBannerDuringGame} />
           <CurrentPlayerBanner
             gameOn={gameOn}
             winner={winner}
             currentPlayer={currentPlayer}
           />
-          <AccentLine />
+          {/* <AccentLine /> */}
           <Board
             gameOn={gameOn}
             board={board}
             winPattern={winPattern}
             handleCellUpdate={handleCellUpdate}
           />
-          <AccentLine />
-          <div className="flex w-[70vw] items-center justify-evenly">
+          {/* <AccentLine /> */}
+          <div className="flex w-full items-center justify-center">
             {!gameOn ? (
               <StartButton
                 text="Play Again"
                 style={{
-                  transform: "scale(0.5)",
+                  transform: "scale(0.65)",
                   backgroundColor: "#FFFFFF",
                   color: "#1A5866",
                   minWidth: "150px",
+                  boxShadow: "var(--shadow)",
                 }}
                 click={resetBoard}
               />
@@ -72,10 +75,13 @@ function App() {
               <StartButton
                 text="Reset Game"
                 style={{
-                  transform: "scale(0.5)",
+                  transform: "scale(0.65)",
                   minWidth: "175px",
                   width: "fit-content",
                   padding: "0.5rem",
+                  boxShadow: "var(--shadow)",
+
+                  // fontSize: "2rem",
                 }}
                 click={resetBoard}
               />
@@ -89,7 +95,7 @@ function App() {
           <StartButton text="Start Game" click={startGameHandler} />
         </>
       )}
-    </>
+    </main>
   );
 }
 

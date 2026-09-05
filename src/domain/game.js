@@ -28,6 +28,7 @@ export function Game() {
   let currentPlayer = {};
   let rounds = [];
   let gameOn = false;
+  const roundNumber = 0;
   const possibilities = [
     [0, 4, 8],
     [1, 4, 7],
@@ -46,6 +47,7 @@ export function Game() {
     // currentPlayerMove,
     winPattern,
     rounds,
+    roundNumber,
     gameOn,
     addPlayer(p, s) {
       const player = createPlayer(p, s);
@@ -82,9 +84,12 @@ export function Game() {
       return;
     },
     selectStartingPlayer() {
+      const random = Math.floor(Math.random() * this.players.length);
+      console.log(random);
+
       this.createGenericPlayers();
       console.log(this.players);
-      const initialPlayer = this.players[0];
+      const initialPlayer = this.players[random];
       currentPlayer = initialPlayer;
       this.currentPlayer = initialPlayer;
     },
