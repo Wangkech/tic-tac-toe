@@ -21,15 +21,11 @@ export function Game() {
     };
   }
 
+  const winPattern = [];
   const board = gameBoard();
-
+  const winner = null;
   const players = [];
   let currentPlayer = {};
-  // eslint-disable-next-line no-unassigned-vars
-  let currentPlayerMove = {
-    cell: "",
-    symbol: "",
-  };
   let rounds = [];
   let gameOn = false;
   const possibilities = [
@@ -46,7 +42,9 @@ export function Game() {
     players,
     board,
     currentPlayer,
+    winner,
     // currentPlayerMove,
+    winPattern,
     rounds,
     gameOn,
     addPlayer(p, s) {
@@ -61,9 +59,31 @@ export function Game() {
         currentPlayer: this.currentPlayer,
         rounds: this.rounds,
         gameOn: this.gameOn,
+        winPattern: this.winPattern,
+        winner: this.winner,
       });
     },
+    createGenericPlayers() {
+      if (this.players.length === 0) {
+        const playerX = createPlayer("player1", "X");
+        this.players.push(playerX);
+        const playerO = createPlayer("player2", "0");
+        this.players.push(playerO);
+      } else if (this.players.length === 1) {
+        const player = this.players[0];
+        if (player.symbol === "X") {
+          let newPlayer = createPlayer("player2", "O");
+          this.players.push(newPlayer);
+        } else {
+          let newPlayer = createPlayer("player2", "X");
+          this.players.push(newPlayer);
+        }
+      }
+      return;
+    },
     selectStartingPlayer() {
+      this.createGenericPlayers();
+      console.log(this.players);
       const initialPlayer = this.players[0];
       currentPlayer = initialPlayer;
       this.currentPlayer = initialPlayer;
@@ -72,6 +92,7 @@ export function Game() {
       gameOn = true;
       this.gameOn = true;
       this.resetBoard();
+      this.selectStartingPlayer();
       return true;
     },
     switchPlayer() {
@@ -85,29 +106,15 @@ export function Game() {
       this.currentPlayer = nextPlayer;
       return nextPlayer;
     },
-    // checkForWin(, move) {
-    //   let winStatus = false;
-    //   let winPattern;
-    //   possibilities.map((possibility) => {
-    //     let matches = 0;
-    //     if (!winStatus) {
-    //       possibility.map((cell) => {
-    //         if (board[cell] === move.symbol) {
-    //           matches++;
-    //         }
-    //         if (matches === 3) {
-    //           winStatus = true;
-    //           winPattern = [...possibility];
-    //         }
-    //       });
-    //     }
-    //   });
-    //   return { winStatus, winPattern };
-    // },
     resetBoard() {
       this.board = gameBoard();
+      this.winPattern.length = 0;
+      this.winner = null;
     },
     updateBoard(cell) {
+      if (!gameOn) {
+        return "ENDED";
+      }
       if (this.board[cell] === "") {
         this.board[cell] = this.currentPlayer.symbol;
         return true;
@@ -126,7 +133,9 @@ export function Game() {
             }
             if (matches === 3) {
               winStatus = true;
-              // winPattern = [...possibility];
+              this.winPattern.length = 0;
+              this.winPattern.push(...possibility);
+              this.winner = this.currentPlayer;
             }
           });
         }
