@@ -1,11 +1,11 @@
 function LogoBanner({ style }) {
   return (
     <div
-      className="flex h-87.5 w-full items-center justify-center"
+      className={`h- row-1 flex h-1/2 w-full items-center justify-center p-8`}
       style={style}
     >
       <img
-        className="h-25 w-80.5"
+        className="h-full w-full"
         src="./images/banner.svg"
         alt="Logo Banner"
       />

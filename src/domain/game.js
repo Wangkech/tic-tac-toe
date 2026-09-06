@@ -1,4 +1,5 @@
-export function Game(player1, player2) {
+export function Game() {
+  // Board
   function gameBoard() {
     const boardSize = 9;
     const board = (boardSize) => {
@@ -13,28 +14,22 @@ export function Game(player1, player2) {
     return board(boardSize);
   }
 
-  function createPlayers(player1, player2) {
-    function createPlayer(name, symbol) {
-      return {
-        name,
-        symbol,
-      };
-    }
-    const playerX = createPlayer(player1, "X");
-    const playerO = createPlayer(player2, "O");
-    return [playerX, playerO];
+  function createPlayer(name, symbol) {
+    return {
+      name,
+      symbol,
+      wins: 0,
+    };
   }
+
+  const winPattern = [];
   const board = gameBoard();
-  const players = createPlayers(player1, player2);
-  const initialPlayer = players[0];
-  let currentPlayer = initialPlayer;
-  // eslint-disable-next-line no-unassigned-vars
-  let currentPlayerMove = {
-    cell: "",
-    symbol: "",
-  };
+  const winner = null;
+  const players = [];
+  let currentPlayer = {};
   let rounds = [];
-  let gameOn = true;
+  let gameOn = false;
+  const roundNumber = 0;
   const possibilities = [
     [0, 4, 8],
     [1, 4, 7],
@@ -49,10 +44,79 @@ export function Game(player1, player2) {
     players,
     board,
     currentPlayer,
-    currentPlayerMove,
+    winner,
+    // currentPlayerMove,
+    winPattern,
     rounds,
-    possibilities,
+    roundNumber,
     gameOn,
+    addPlayer(p, s) {
+      const player = createPlayer(p, s);
+      this.players.push(player);
+    },
+
+    getSnapshot() {
+      return Object.freeze({
+        players: this.players,
+        board: this.board,
+        currentPlayer: this.currentPlayer,
+        rounds: this.rounds,
+        gameOn: this.gameOn,
+        winPattern: this.winPattern,
+        winner: this.winner,
+      });
+    },
+    restoreSnapshot(data) {
+      players.length = 0;
+      players.push(...data.players);
+      this.players = data.players;
+      this.currentPlayer = data.currentPlayer;
+      this.rounds = data.rounds;
+      gameOn = data.gameOn;
+      this.gameOn = data.gameOn;
+      winPattern.length = 0;
+      winPattern.push(...data.winPattern);
+      this.winPattern = data.winPattern;
+      this.board = data.board;
+
+      this.winner = data.winner;
+      return this.getSnapshot();
+    },
+    createGenericPlayers() {
+      if (this.players.length === 0) {
+        const playerX = createPlayer("player1", "X");
+        this.players.push(playerX);
+        const playerO = createPlayer("player2", "O");
+        this.players.push(playerO);
+      } else if (this.players.length === 1) {
+        const player = this.players[0];
+        if (player.symbol === "X") {
+          let newPlayer = createPlayer("player2", "O");
+          this.players.push(newPlayer);
+        } else {
+          let newPlayer = createPlayer("player2", "X");
+          this.players.push(newPlayer);
+        }
+      }
+      return;
+    },
+    selectStartingPlayer() {
+      const random = Math.floor(Math.random() * this.players.length);
+      console.log(random);
+
+      this.createGenericPlayers();
+      console.log(this.players);
+      const initialPlayer = this.players[random];
+      currentPlayer = initialPlayer;
+      this.currentPlayer = initialPlayer;
+    },
+    startRound() {
+      gameOn = true;
+      this.gameOn = true;
+      this.resetBoard();
+      this.selectStartingPlayer();
+      return true;
+    },
     switchPlayer() {
       let nextPlayer;
       if (this.players.indexOf(this.currentPlayer) === 0) {
@@ -64,118 +128,50 @@ export function Game(player1, player2) {
       this.currentPlayer = nextPlayer;
       return nextPlayer;
     },
-    checkForWin(board, move) {
+    resetGame() {
+      this.resetBoard();
+      this.players.map((p) => (p.wins = 0));
+    },
+    resetBoard() {
+      this.board = gameBoard();
+      this.winPattern.length = 0;
+      this.winner = null;
+    },
+    updateBoard(cell) {
+      if (!gameOn) {
+        return "ENDED";
+      }
+      if (this.board[cell] === "") {
+        this.board[cell] = this.currentPlayer.symbol;
+        return true;
+      } else return false;
+    },
+    checkForWin() {
       let winStatus = false;
-      let winPattern;
+      // let winPattern;
+
       possibilities.map((possibility) => {
         let matches = 0;
         if (!winStatus) {
           possibility.map((cell) => {
-            if (board[cell] === move.symbol) {
+            if (this.board[cell] === this.currentPlayer.symbol) {
               matches++;
             }
             if (matches === 3) {
               winStatus = true;
-              winPattern = [...possibility];
+              this.winPattern.length = 0;
+              this.winPattern.push(...possibility);
+              this.winner = this.currentPlayer;
+              this.players.find((p) => p.symbol === this.currentPlayer.symbol)
+                .wins++;
             }
           });
         }
       });
-      return { winStatus, winPattern };
+      return winStatus;
     },
-    resetBoard() {
-      this.board.map((cell) => {
-        cell.push("");
-      });
-    },
-    playRound() {
-      let board = this.board;
-      // let symbol = this.currentPlayer.symbol;
-      let players = this.players;
-      let currentPlayer = this.currentPlayer;
-      let playerMove = this.currentPlayerMove;
-      let gameOn = this.gameOn;
-      let roundWinner;
-      let rounds = this.rounds;
-
-      function selectedCell(cell) {
-        let symbol = currentPlayer.symbol;
-
-        return {
-          symbol,
-          cell,
-        };
-      }
-      function updateBoard() {
-        let cell = playerMove.cell;
-        let symbol = playerMove.symbol;
-        board[cell] = symbol;
-        console.log(symbol, "has been placed at cell", cell + 1);
-      }
-      function checkForWin() {
-        let winStatus = false;
-        let winPattern;
-
-        possibilities.map((possibility) => {
-          let matches = 0;
-          if (!winStatus) {
-            possibility.map((cell) => {
-              if (board[cell] === playerMove.symbol) {
-                matches++;
-              }
-              if (matches === 3) {
-                winStatus = true;
-                winPattern = [...possibility];
-              }
-            });
-          }
-        });
-        return { winStatus, winPattern };
-      }
-      // function handResult() {
-      //   if (result === {}) {
-      //     console.log("This game is a tie");
-      //   } else {
-      //     console.log(result, "Has WON this round!!");
-      //   }
-      // }
-      function switchPlayer() {
-        let nextPlayer;
-        if (players.indexOf(currentPlayer) === 0) {
-          nextPlayer = players[1];
-        } else {
-          nextPlayer = players[0];
-        }
-        currentPlayer = nextPlayer;
-      }
-      function makeMove() {
-        playerMove = selectedCell();
-        let pattern;
-        if (board[playerMove.cell] != "") {
-          return;
-        } else {
-          updateBoard();
-          let winStatus = checkForWin().winStatus;
-          if (winStatus) {
-            pattern = checkForWin().winPattern;
-            gameOn = !gameOn;
-            roundWinner = { currentPlayer, pattern };
-
-            console.log(gameOn ? "game is still on" : "game is over");
-          } else if (!checkForWin().winStatus && board.includes("") === false) {
-            gameOn = !gameOn;
-          }
-        }
-      }
-      function roundDetails() {
-        return roundWinner;
-      }
-
-      while (board.includes("") === true && gameOn) {
-        makeMove();
-        switchPlayer();
-      }
-      rounds.push(roundDetails());
+    endCurrentRound() {
+      this.gameOn = false;
     },
   };
 }
