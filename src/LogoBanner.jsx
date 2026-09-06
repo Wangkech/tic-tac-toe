@@ -1,7 +1,7 @@
-function LogoBanner({ style, onGame }) {
+function LogoBanner({ style }) {
   return (
     <div
-      className={`flex h-1/2 items-center justify-center p-8 ${onGame && " h-full w-full scale-80"}`}
+      className={`h- row-1 flex h-1/2 w-full items-center justify-center p-8`}
       style={style}
     >
       <img

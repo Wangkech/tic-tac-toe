@@ -1,16 +1,31 @@
 import { useState } from "react";
 import { Game } from "../domain/game";
 const controller = Game();
-let snapshot = controller.getSnapshot();
+const raw = localStorage.getItem("game");
+const storedData = JSON.parse(raw);
+let snapshot = storedData
+  ? controller.restoreSnapshot(storedData)
+  : controller.getSnapshot();
+const rawUI = localStorage.getItem("uiSnapshot");
+const uiSnapshot = rawUI ? JSON.parse(rawUI) : null;
 export const useGame = () => {
   const [game, setGame] = useState(snapshot);
-  const [onGame, setOnGame] = useState(false);
+  const [onGame, setOnGame] = useState(uiSnapshot.onGame ?? null);
   const currentPlayer = game?.currentPlayer;
   const gameOn = game.gameOn;
   const board = game?.board;
   const players = game?.players ?? [];
   const winPattern = game.winPattern;
   const winner = game.winner;
+  const saveUIstates = () => {};
+  const saveGame = () => {
+    const uiSnapshot = {
+      onGame: onGame,
+    };
+    localStorage.setItem("uiSnapshot", JSON.stringify(uiSnapshot));
+    localStorage.setItem("game", JSON.stringify(controller.getSnapshot()));
+    saveUIstates();
+  };
   // start new game
   const startNewGame = async () => {
     // controller.addPlayer("wangkech", "X");
@@ -20,12 +35,14 @@ export const useGame = () => {
     controller.startRound();
     console.log(controller.getSnapshot());
     setGame(controller.getSnapshot());
+    saveGame();
   };
   // determine starting player
   // handle cell click
   const updateCell = (cell) => {
     const updated = controller.updateBoard(cell);
     setGame(controller.getSnapshot());
+    saveGame();
     // console.log(updated);
 
     if (updated === "ENDED") {
@@ -39,24 +56,36 @@ export const useGame = () => {
       if (win) {
         controller.endCurrentRound();
         setGame(controller.getSnapshot());
+        saveGame();
 
         return "WIN";
       } else if (!win && controller.board.includes("") && controller.gameOn) {
         controller.switchPlayer();
         setGame(controller.getSnapshot());
+        saveGame();
+
         return "ON";
       } else {
         controller.endCurrentRound();
         setGame(controller.getSnapshot());
+        saveGame();
 
         return "TIE";
       }
     }
   };
+
+  console.log(currentPlayer);
+  const resetGame = () => {
+    controller.resetGame();
+    setGame(controller.getSnapshot());
+    saveGame();
+  };
   const resetBoard = () => {
     controller.startRound();
     setOnGame(true);
     setGame(controller.getSnapshot());
+    saveGame();
   };
 
   return {
@@ -70,6 +99,7 @@ export const useGame = () => {
     startNewGame,
     updateCell,
     resetBoard,
+    resetGame,
     winPattern,
     winner,
   };

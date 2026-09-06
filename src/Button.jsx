@@ -1,0 +1,13 @@
+function Button({ text, click, style, onGame }) {
+  return (
+    <button
+      className={`row-4 h-18.75 w-fit min-w-36 rounded-2xl border-2 border-dashed border-white p-2 font-['piedra'] text-3xl text-white shadow-[0_0_20px_8px_rgb(33,38,39,0.25)] ${onGame && "row-4"}`}
+      onClick={click}
+      style={style}
+    >
+      {text}
+    </button>
+  );
+}
+
+export default Button;

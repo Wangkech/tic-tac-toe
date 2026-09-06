@@ -1,13 +1,7 @@
-import Board from "./Board";
-import LogoBanner from "./LogoBanner.jsx";
-import StartButton from "./StartButton.jsx";
-import CurrentPlayerBanner from "./CurrentPlayerBanner.jsx";
-import AccentLine from "./AccentLine.jsx";
 import { useGame } from "./hooks/useGame.js";
+import GameScreen from "./GameScreen.jsx";
+import HomeScreen from "./HomeScreen.jsx";
 function App() {
-  // states
-  // const [player1, setPlayer1] = useState("Player 1");
-  // const [player2, setPlayer2] = useState("Player 2");
   const {
     startNewGame,
     board,
@@ -18,13 +12,9 @@ function App() {
     winPattern,
     setOnGame,
     resetBoard,
+    resetGame,
     updateCell,
   } = useGame();
-
-  const logoBannerDuringGame = {
-    height: "9.625rem",
-    transition: "all ease 0.5s",
-  };
 
   function startGameHandler() {
     startNewGame();
@@ -39,63 +29,24 @@ function App() {
     }
   }
   return (
-    <main
-      className={`flex h-1/2 flex-col items-center justify-between gap-4 ${onGame && "grid h-full w-full grid-rows-[6rem_7rem_minmax(0,350px)_4rem] justify-center gap-0"}`}
-    >
-      {onGame ? (
-        <>
-          <LogoBanner onGame={onGame} style={logoBannerDuringGame} />
-          <CurrentPlayerBanner
-            gameOn={gameOn}
-            winner={winner}
-            currentPlayer={currentPlayer}
-          />
-          {/* <AccentLine /> */}
-          <Board
-            gameOn={gameOn}
-            board={board}
-            winPattern={winPattern}
-            handleCellUpdate={handleCellUpdate}
-          />
-          {/* <AccentLine /> */}
-          <div className="flex w-full items-center justify-center">
-            {!gameOn ? (
-              <StartButton
-                text="Play Again"
-                style={{
-                  transform: "scale(0.65)",
-                  backgroundColor: "#FFFFFF",
-                  color: "#1A5866",
-                  minWidth: "150px",
-                  boxShadow: "var(--shadow)",
-                }}
-                click={resetBoard}
-              />
-            ) : (
-              <StartButton
-                text="Reset Game"
-                style={{
-                  transform: "scale(0.65)",
-                  minWidth: "175px",
-                  width: "fit-content",
-                  padding: "0.5rem",
-                  boxShadow: "var(--shadow)",
-
-                  // fontSize: "2rem",
-                }}
-                click={resetBoard}
-              />
-            )}
-          </div>
-        </>
-      ) : (
-        <>
-          <LogoBanner />
-          <AccentLine />
-          <StartButton text="Start Game" click={startGameHandler} />
-        </>
+    <>
+      {onGame && (
+        <GameScreen
+          winner={winner}
+          board={board}
+          currentPlayer={currentPlayer}
+          gameOn={gameOn}
+          onGame={onGame}
+          handleCellUpdate={handleCellUpdate}
+          resetBoard={resetBoard}
+          winPattern={winPattern}
+          resetGame={resetGame}
+        />
       )}
-    </main>
+      {!onGame && (
+        <HomeScreen onGame={onGame} startGameHandler={startGameHandler} />
+      )}
+    </>
   );
 }
 
