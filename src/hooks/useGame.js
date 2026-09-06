@@ -10,7 +10,7 @@ const rawUI = localStorage.getItem("uiSnapshot");
 const uiSnapshot = rawUI ? JSON.parse(rawUI) : null;
 export const useGame = () => {
   const [game, setGame] = useState(snapshot);
-  const [onGame, setOnGame] = useState(uiSnapshot.onGame ?? null);
+  const [onGame, setOnGame] = useState(uiSnapshot?.onGame ?? null);
   const currentPlayer = game?.currentPlayer;
   const gameOn = game.gameOn;
   const board = game?.board;
