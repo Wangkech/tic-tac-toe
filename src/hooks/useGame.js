@@ -10,7 +10,7 @@ const rawUI = localStorage.getItem("uiSnapshot");
 const uiSnapshot = rawUI ? JSON.parse(rawUI) : null;
 export const useGame = () => {
   const [game, setGame] = useState(snapshot);
-  const [onGame, setOnGame] = useState(uiSnapshot?.onGame ?? null);
+  const [onGame, setOnGame] = useState(Boolean(uiSnapshot?.onGame ?? null));
   const currentPlayer = game?.currentPlayer;
   const gameOn = game.gameOn;
   const board = game?.board;
@@ -37,6 +37,7 @@ export const useGame = () => {
     setGame(controller.getSnapshot());
     saveGame();
   };
+
   // determine starting player
   // handle cell click
   const updateCell = (cell) => {
@@ -75,16 +76,24 @@ export const useGame = () => {
     }
   };
 
-  console.log(currentPlayer);
   const resetGame = () => {
+    // resets both the board and the stats
     controller.resetGame();
     setGame(controller.getSnapshot());
     saveGame();
   };
   const resetBoard = () => {
+    // clears only the board
     controller.startRound();
     setOnGame(true);
     setGame(controller.getSnapshot());
+    saveGame();
+  };
+  const backToHome = () => {
+    // resets the game state
+    let snapshot = controller.endGame();
+    setGame(snapshot);
+    console.log(onGame);
     saveGame();
   };
 
@@ -102,5 +111,6 @@ export const useGame = () => {
     resetGame,
     winPattern,
     winner,
+    backToHome,
   };
 };

@@ -20,7 +20,11 @@ function App() {
     startNewGame();
     setOnGame(true);
   }
-
+const {backToHome, } = useGame()
+  function handleBackToHome(){
+    backToHome();
+    setOnGame(false);
+  }
   function handleCellUpdate(cell) {
     const result = updateCell(cell);
     console.log(result);
@@ -28,8 +32,13 @@ function App() {
       alert(`${currentPlayer.name} Already Won. Game Ended`);
     }
   }
+
+  console.log(onGame)
   return (
     <>
+     {!onGame && (
+        <HomeScreen onGame={onGame} startGameHandler={startGameHandler} />
+      )}
       {onGame && (
         <GameScreen
           winner={winner}
@@ -37,15 +46,14 @@ function App() {
           currentPlayer={currentPlayer}
           gameOn={gameOn}
           onGame={onGame}
+          handleBackToHome={handleBackToHome}
           handleCellUpdate={handleCellUpdate}
           resetBoard={resetBoard}
           winPattern={winPattern}
           resetGame={resetGame}
         />
       )}
-      {!onGame && (
-        <HomeScreen onGame={onGame} startGameHandler={startGameHandler} />
-      )}
+     
     </>
   );
 }

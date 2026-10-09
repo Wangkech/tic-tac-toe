@@ -2,11 +2,15 @@ import PlayersBanner from "./PlayersBanner";
 import Board from "./Board";
 import Button from "./Button";
 import logo from "./assets/images/favicon.svg";
-function Header() {
+import { useGame } from "./hooks/useGame";
+function Header({handleBackToHome}) {
+  
   return (
     <div className="row-1 flex w-full items-center max-[376px]:px-4">
       <span className="w-[30%]">
-        <button className="rounded-xl bg-white p-2 text-(--primary-bg) shadow-(--shadow)">
+        <button
+        onClick={()=>handleBackToHome()} 
+        className="rounded-xl bg-white p-2 text-(--primary-bg) shadow-(--shadow)">
           Back
         </button>
       </span>
@@ -21,20 +25,22 @@ function Header() {
 }
 
 export default function GameScreen({
-  onGame,
+  // onGame,
   gameOn,
   winPattern,
   currentPlayer,
   handleCellUpdate,
   resetBoard,
   board,
+  handleBackToHome,
   resetGame,
 }) {
+  const {onGame} = useGame()
   return (
     <main
       className={`grid h-full w-full grid-rows-[3rem_6rem_minmax(0,350px)_4rem] justify-center p-4 max-[376px]:px-2 min-[376px]:gap-10`}
     >
-      <Header />
+      <Header handleBackToHome={handleBackToHome} />
       <>
         <PlayersBanner currentPlayer={currentPlayer} />
 

@@ -170,8 +170,14 @@ export function Game() {
       });
       return winStatus;
     },
+    endGame() {
+      this.resetGame();
+      this.gameOn = false;
+      return this.getSnapshot();
+    },
     endCurrentRound() {
       this.gameOn = false;
+      return this.getSnapshot();
     },
   };
 }
